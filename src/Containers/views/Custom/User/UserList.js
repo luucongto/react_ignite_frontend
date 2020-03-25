@@ -16,17 +16,17 @@ class UserList extends CustomAdmin {
     this.name = 'User'
     this.name_plural = 'Users'
     this.list_display_links = ['username']
-    this.list_display = ['username', 'email', 'main_address', 'is_active']
+    this.list_display = ['id', 'username', 'email']
     autoBind(this)
     this.get_queryset = this.get_queryset.bind(this)
   }
-  get_field_transforms () {
-    return {
-      is_active: function (content, object) {
-        return content ? 'YES' : 'NO'
-      }
-    }
-  }
+  // get_field_transforms () {
+  //   return {
+  //     is_active: function (content, object) {
+  //       return content ? 'YES' : 'NO'
+  //     }
+  //   }
+  // }
 
   onSubmit (params) {
     var data = {
@@ -87,7 +87,10 @@ class UserList extends CustomAdmin {
       term: this.state.term,
       page: page_number,
       limit: list_per_page,
-      field: 'email'
+      field: 'email',
+      extra_fields: {
+        user_type: 1
+      }
     })
   }
 
@@ -105,7 +108,7 @@ class UserList extends CustomAdmin {
     let schema = {
       title: this.name,
       type: 'object',
-      required: ['username', 'email', 'main_address' ],
+      required: ['username', 'email' ],
       properties: {
         id: {
           type: 'number',
@@ -113,10 +116,8 @@ class UserList extends CustomAdmin {
         },
         username: { type: 'string', title: this.props.t('user_name'), default: '' },
         email: { type: 'string', title: this.props.t('email'), default: '', format: 'email' },
-        main_address: { type: 'string', title: this.props.t('recipient_address'), default: 'ADMIN_DONT_NEED_ADDRESS' },
         password: { type: 'string', title: this.props.t('password'), default: '' },
-        is_active: { type: 'boolean', title: this.props.t('is_active'), default: false },
-        role: { type: 'integer', title: this.props.t('role'), default: 0, enum: [0, 1], enumNames: ['User', 'Admin'] }
+        user_type: { type: 'integer', title: this.props.t('user_type'), default: 0, enum: [0, 1, 9], enumNames: ['User', 'CMS', 'Admin'] }
       }
     }
     const customFormats = {
@@ -129,10 +130,7 @@ class UserList extends CustomAdmin {
       'password': {
         'ui:widget': 'password'
       },
-      is_active: {
-        'ui:widget': 'radio'
-      },
-      role: {
+      user_type: {
         'ui:widget': 'radio'
       }
 

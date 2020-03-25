@@ -11,6 +11,11 @@ export default {
       name: I18n.t('user'),
       url: '/user',
       icon: 'icon-user'
+    },
+    {
+      name: I18n.t('article'),
+      url: '/article',
+      icon: 'icon-book'
     }
 
     // {
